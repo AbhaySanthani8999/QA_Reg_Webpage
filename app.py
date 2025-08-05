@@ -3,13 +3,12 @@ from flask_cors import CORS
 import re
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for Streamlit interaction
+CORS(app)  # Allow cross-origin requests from Streamlit
 
 @app.route('/register', methods=['POST'])
 def register():
-    data = request.json
+    data = request.get_json()
 
-    # Basic validations
     required_fields = ['first_name', 'last_name', 'email', 'password', 'confirm_password', 'gender', 'dob', 'country', 'terms']
     for field in required_fields:
         if not data.get(field):
@@ -21,8 +20,7 @@ def register():
     if not re.match(r"[^@]+@[^@]+\.[^@]+", data['email']):
         return jsonify({'success': False, 'message': 'Invalid email format'}), 400
 
-    # Simulate user creation
-    response = {
+    return jsonify({
         'success': True,
         'message': 'User registered successfully!',
         'data': {
@@ -32,10 +30,10 @@ def register():
             'dob': data['dob'],
             'country': data['country']
         }
-    }
-    return jsonify(response), 200
+    }), 200
 
 if __name__ == '__main__':
-    # app.run(port=5000, debug=True)
-    app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
-
+    # This version avoids issues with signal handling
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
