@@ -3,7 +3,7 @@ from datetime import date
 import re
 
 st.set_page_config(page_title="QA Test Registration", layout="centered")
-st.title("🧪 QA Test Registration Form")
+st.title("Registration Form")
 
 with st.form("reg_form"):
     col1, col2 = st.columns(2)
